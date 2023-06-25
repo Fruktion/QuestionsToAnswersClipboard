@@ -112,7 +112,7 @@ class ClipboardMonitor:
         Checks clipboard for any new data, if found matches with dict_qa and replaces with appropriate answer.
         """
 
-        # Checks if clipboard contents have changed
+        # Checks if the clipboard contents have changed
         if (new_data := pyperclip.paste()) != self.prev_data:
             self.prev_data: str = new_data
             if self.prev_data in self.answers:
