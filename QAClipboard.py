@@ -160,7 +160,11 @@ class _Main(type):
         """
         Method for initialization of QA dictionary
 
-        Returns: the dictionary of QA
+        Returns:
+            dict[str, str]: the dictionary of QA
+        
+        Raises:
+            ValueError: Raises this exception if any exception associated with QA initialization is raised
 
         Notes:
             The dictionary should look like this:
@@ -177,7 +181,7 @@ class _Main(type):
             with open('dict_qa.txt', 'r') as file:
                 return dict(json.loads(file.read().replace("'", '"')))
         except (FileNotFoundError, TypeError) as e:
-            raise ValueError(f"No QA initialized. An exception occurred: {e}")
+            raise ValueError(f"No QA initialized. An exception occurred:\n{e}")
 
 
 class Main(metaclass=_Main):
