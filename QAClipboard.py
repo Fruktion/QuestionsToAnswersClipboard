@@ -105,7 +105,6 @@ class Main(metaclass=_Main):
         Q and A.
         """
 
-        print(cls.dict_qa)
         ClipboardMonitor(cls.dict_qa).start_monitoring()
 
 
