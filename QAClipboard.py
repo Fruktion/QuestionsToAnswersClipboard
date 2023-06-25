@@ -13,9 +13,6 @@ class ClipboardMonitor:
 
     """
     A class to monitor and interact with clipboard.
-
-    Attributes:
-        dict_qa: A dictionary with questions as keys and answers as values.
     """
 
     def __init__(self, dict_qa: dict[str, str]) -> None:
@@ -24,10 +21,59 @@ class ClipboardMonitor:
         Initializes ClipboardMonitor with a dictionary of questions and answers.
         """
 
-        self.dict_qa: dict[str, str] = dict_qa
-        self.answers: list[str] = list(dict_qa.values())
-        self.prev_data: str = str()
+        self.__dict_qa: Final[dict[str, str]] = dict_qa
+        self.__answers: Final[set[str]] = set(dict_qa.values())
+        self.__prev_data: str = str()
         pyperclip.copy(str())  # Clearing the clipboard
+
+    @property
+    def dict_qa(self) -> dict[str, str]:
+
+        """
+        Getter for the self.__dict_qa attribute.
+
+        Returns:
+            self.__dict_qa (dict[str, str]): The dictionary of questions and answers.
+        """
+
+        return self.__dict_qa
+
+    @property
+    def prev_data(self) -> str:
+
+        """
+        Getter for the self.__prev_data attribute.
+
+        Returns:
+            self.__prev_data (str): The lately saved clipboard contents as a string.
+
+        """
+
+        return self.__prev_data
+
+    @prev_data.setter
+    def prev_data(self, value: str) -> None:
+
+        """
+        Setter for the self.__prev_data attribute.
+
+        Raises:
+            TypeError: An exception is thrown if the new value type is not str.
+        """
+
+        if isinstance(value, str):
+            self.__prev_data = value
+        else:
+            raise TypeError(f"value type should match {str}. {type(value)} given instead.")
+
+    @property
+    def answers(self) -> set[str]:
+
+        """
+        Getter for the self.__answers attribute
+        """
+
+        return self.__answers
 
     def check_clipboard(self) -> None:
 
@@ -38,7 +84,6 @@ class ClipboardMonitor:
         # Checks if clipboard contents have changed
         if (new_data := pyperclip.paste()) != self.prev_data:
             self.prev_data: str = new_data
-            print(self.prev_data)
             if self.prev_data in self.answers:
                 return
             pyperclip.copy(self.dict_qa.get(new_data, 'NA'))
