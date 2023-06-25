@@ -12,14 +12,45 @@ import json
 class ClipboardMonitor:
 
     """
-    A class to monitor and interact with clipboard.
+    A class to monitor and interact with the system's clipboard.
+
+    The ClipboardMonitor class automates the replacement of copied text with predefined answers if the copied text
+    matches the questions from a provided dictionary. The class is equipped with methods for getting/setting the
+    previous clipboard contents, monitoring the clipboard, and checking and updating clipboard content if it matches
+    questions from the predefined dictionary. The monitoring process can be stopped by using a keyboard interrupt.
+
+    Methods:
+        check_clipboard: Checks the clipboard for any new data, if found, matches it with dict_qa and replaces it with
+        the appropriate answer.
+        start_monitoring: Starts the process of monitoring the clipboard.
+
+    Raises:
+        TypeError: If dict_qa provided is not a dictionary or any element in the dictionary is not a string.
+                   Also, if the type of value for prev_data setter is not a string.
     """
 
     def __init__(self, dict_qa: dict[str, str]) -> None:
 
         """
         Initializes ClipboardMonitor with a dictionary of questions and answers.
+
+        Raises:
+            TypeError: Raises this exception if the dict_qa type is not a dictionary or if any element in the dictionary
+             is not a string
         """
+
+        if isinstance(dict_qa, dict):
+            for possible_question, possible_answer in dict_qa.items():
+                if isinstance(possible_question, str):
+                    pass
+                else:
+                    raise TypeError(f"question type should match {str}. {type(possible_question)} given instead.")
+                if isinstance(possible_answer, str):
+                    pass
+                else:
+                    raise TypeError(f"answer type should match {str}. {type(possible_answer)} given instead.")
+        else:
+            raise TypeError(f"dict_qa type should match {dict}. {type(dict_qa)} given instead.")
 
         self.__dict_qa: Final[dict[str, str]] = dict_qa
         self.__answers: Final[set[str]] = set(dict_qa.values())
@@ -106,10 +137,20 @@ class _Main(type):
 
     """
     A metaclass for initialization of the Q and A.
-    It'd be nice if the data were initialized during compile-time for the performance issues.
+    For performance reasons such a data should be initialized during compile-time.
+
+    Methods:
+        __new__(mcs, name, bases, attrs): The constructor creating a new class attribute for the class inheriting from
+        the _Main metaclass
+        __dict_init(): The private method responsible for the initialization of the QA dictionary
     """
 
     def __new__(mcs, name: Any, bases: Any, attrs: dict) -> _Main:
+
+        """
+        A method initializing a new class attribute for the class that inherits from this metaclass.
+        """
+
         attrs['dict_qa']: dict[str, str] = mcs.__dict_init()
         return super().__new__(mcs, name, bases, attrs)
 
@@ -120,6 +161,15 @@ class _Main(type):
         Method for initialization of QA dictionary
 
         Returns: the dictionary of QA
+
+        Notes:
+            The dictionary should look like this:
+                {
+                    'What is the capital of France?': "Paris",
+                    "What is the capital of England?": 'London'
+                }
+
+            The choice of the use of single or double quotes does not matter as either is correct.
 
         """
 
@@ -137,6 +187,10 @@ class Main(metaclass=_Main):
 
     Attributes:
         dict_qa (dict[str, str]): A dictionary mapping questions to their respective answers
+
+    Methods:
+        main(): The main method for the whole program execution.
+        The whole program should be executed within this method.
     """
 
     dict_qa: Final[dict[str, str]] = ...
