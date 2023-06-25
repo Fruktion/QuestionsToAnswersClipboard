@@ -176,8 +176,8 @@ class _Main(type):
         try:
             with open('dict_qa.txt', 'r') as file:
                 return dict(json.loads(file.read().replace("'", '"')))
-        except (FileNotFoundError, TypeError):
-            return dict()
+        except (FileNotFoundError, TypeError) as e:
+            raise ValueError(f"No QA initialized. An exception occurred: {e}")
 
 
 class Main(metaclass=_Main):
